@@ -1,0 +1,20 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="64" cy="64" r="64" fill="#2563eb"/>
+  
+  <!-- Markdown符号 -->
+  <g fill="white">
+    <!-- M字母 -->
+    <path d="M25 35 L25 85 L35 85 L35 50 L50 70 L55 70 L70 50 L70 85 L80 85 L80 35 L70 35 L52.5 60 L35 35 Z"/>
+    
+    <!-- 向下箭头 -->
+    <path d="M90 35 L90 55 L85 55 L95 70 L105 55 L100 55 L100 35 Z"/>
+    
+    <!-- 文档图标 -->
+    <rect x="85" y="75" width="20" height="25" rx="2" fill="white" stroke="none"/>
+    <rect x="87" y="80" width="16" height="2" fill="#2563eb"/>
+    <rect x="87" y="85" width="12" height="2" fill="#2563eb"/>
+    <rect x="87" y="90" width="14" height="2" fill="#2563eb"/>
+    <rect x="87" y="95" width="10" height="2" fill="#2563eb"/>
+  </g>
+</svg>

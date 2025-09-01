@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WebtoMD 图标生成器</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .icon-preview {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+      align-items: center;
+    }
+    .icon-size {
+      text-align: center;
+    }
+    .icon-size canvas {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+    }
+    .download-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .instructions {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border-left: 4px solid #3b82f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>WebtoMD 图标生成器</h1>
+    <p>这个工具将为您的 WebtoMD 扩展生成所需的图标文件。</p>
+
+    <div class="icon-preview">
+      <div class="icon-size">
+        <div>16x16</div>
+        <canvas id="icon16" width="16" height="16"></canvas>
+      </div>
+      <div class="icon-size">
+        <div>32x32</div>
+        <canvas id="icon32" width="32" height="32"></canvas>
+      </div>
+      <div class="icon-size">
+        <div>48x48</div>
+        <canvas id="icon48" width="48" height="48"></canvas>
+      </div>
+      <div class="icon-size">
+        <div>128x128</div>
+        <canvas id="icon128" width="128" height="128"></canvas>
+      </div>
+    </div>
+
+    <div class="download-buttons">
+      <button onclick="downloadIcon(16)">下载 16x16</button>
+      <button onclick="downloadIcon(32)">下载 32x32</button>
+      <button onclick="downloadIcon(48)">下载 48x48</button>
+      <button onclick="downloadIcon(128)">下载 128x128</button>
+      <button onclick="downloadAllIcons()">下载全部</button>
+    </div>
+
+    <div class="instructions">
+      <h3>使用说明：</h3>
+      <ol>
+        <li>点击上方的按钮下载对应尺寸的图标文件</li>
+        <li>将下载的图标文件保存到 <code>Code/icons/</code> 目录中</li>
+        <li>文件命名格式：<code>icon16.png</code>, <code>icon32.png</code>, <code>icon48.png</code>, <code>icon128.png</code></li>
+        <li>确保所有图标文件都已保存后，您的扩展就可以正常使用了</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // 绘制图标的函数
+    function drawIcon(canvas, size) {
+      const ctx = canvas.getContext('2d');
+      const scale = size / 128; // 基于128px进行缩放
+      
+      // 清除画布
+      ctx.clearRect(0, 0, size, size);
+      
+      // 背景圆形
+      ctx.fillStyle = '#2563eb';
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      // 白色的 M 字母
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${Math.floor(size * 0.4)}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // 绘制 M
+      const mY = size * 0.35;
+      ctx.fillText('M', size * 0.3, mY);
+      
+      // 绘制向下箭头
+      ctx.beginPath();
+      ctx.moveTo(size * 0.7, size * 0.25);
+      ctx.lineTo(size * 0.7, size * 0.45);
+      ctx.lineTo(size * 0.65, size * 0.4);
+      ctx.moveTo(size * 0.7, size * 0.45);
+      ctx.lineTo(size * 0.75, size * 0.4);
+      ctx.moveTo(size * 0.7, size * 0.45);
+      ctx.lineTo(size * 0.7, size * 0.55);
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = Math.max(1, size * 0.03);
+      ctx.stroke();
+      
+      // 文档图标
+      const docX = size * 0.65;
+      const docY = size * 0.6;
+      const docW = size * 0.2;
+      const docH = size * 0.25;
+      
+      ctx.fillStyle = 'white';
+      ctx.fillRect(docX, docY, docW, docH);
+      
+      // 文档线条
+      ctx.fillStyle = '#2563eb';
+      const lineHeight = size * 0.02;
+      const lineSpacing = size * 0.04;
+      for (let i = 0; i < 3; i++) {
+        const y = docY + lineSpacing + i * lineSpacing;
+        const width = docW * (i === 2 ? 0.7 : 0.9);
+        ctx.fillRect(docX + size * 0.02, y, width, lineHeight);
+      }
+    }
+    
+    // 下载图标函数
+    function downloadIcon(size) {
+      const canvas = document.getElementById(`icon${size}`);
+      const link = document.createElement('a');
+      link.download = `icon${size}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+    
+    // 下载所有图标
+    function downloadAllIcons() {
+      const sizes = [16, 32, 48, 128];
+      sizes.forEach((size, index) => {
+        setTimeout(() => {
+          downloadIcon(size);
+        }, index * 500); // 延迟下载，避免浏览器阻止
+      });
+    }
+    
+    // 初始化绘制所有图标
+    function initIcons() {
+      const sizes = [16, 32, 48, 128];
+      sizes.forEach(size => {
+        const canvas = document.getElementById(`icon${size}`);
+        drawIcon(canvas, size);
+      });
+    }
+    
+    // 页面加载完成后初始化
+    window.addEventListener('load', initIcons);
+  </script>
+</body>
+</html>

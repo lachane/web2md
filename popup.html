@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WebtoMD</title>
+  <style>
+    body {
+      width: 320px;
+      min-height: 240px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      background-color: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    /* 平台特定样式 */
+    .platform-mac body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .platform-windows body {
+      font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+    }
+
+    /* 主题支持 */
+    .theme-dark body {
+      background-color: #1f2937;
+      color: #f9fafb;
+    }
+
+    .theme-dark .button-secondary {
+      background-color: #374151;
+      color: #f9fafb;
+      border-color: #4b5563;
+    }
+
+    .theme-dark .button-secondary:hover {
+      background-color: #4b5563;
+    }
+
+    .theme-dark .section-title {
+      color: #f9fafb;
+    }
+
+    .theme-dark .shortcut-hint {
+      color: #9ca3af;
+      border-top-color: #4b5563;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 12px;
+    }
+
+    .section {
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    .button {
+      width: 100%;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .button-primary {
+      background-color: #2563eb;
+      color: white;
+    }
+
+    .button-primary:hover {
+      background-color: #1d4ed8;
+    }
+
+    .button-secondary {
+      background-color: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .button-secondary:hover {
+      background-color: #e5e7eb;
+    }
+
+    .shortcut-hint {
+      font-size: 11px;
+      color: #9ca3af;
+      text-align: center;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .status {
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .status-info {
+      background-color: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .status-success {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-error {
+      background-color: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .platform-indicator {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 10px;
+      color: #9ca3af;
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .theme-dark .platform-indicator {
+      background: #374151;
+      color: #9ca3af;
+    }
+
+    .status-bar {
+      margin-top: 16px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      text-align: center;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .theme-dark .status-bar {
+      background: #374151;
+      border-color: #4b5563;
+    }
+
+    .quick-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .quick-action {
+      flex: 1;
+      padding: 6px 8px;
+      font-size: 11px;
+      border: 1px solid #d1d5db;
+      background: white;
+      color: #6b7280;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-action:hover {
+      background: #f9fafb;
+      color: #374151;
+    }
+
+    .theme-dark .quick-action {
+      background: #374151;
+      border-color: #4b5563;
+      color: #9ca3af;
+    }
+
+    .theme-dark .quick-action:hover {
+      background: #4b5563;
+      color: #f3f4f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="platform-indicator" id="platformIndicator"></div>
+  
+  <div class="header">
+    <div class="logo">WebtoMD</div>
+    <div class="subtitle">网页内容转 Markdown</div>
+  </div>
+
+  <div id="status" class="status hidden"></div>
+
+  <div class="section">
+    <div class="section-title">保存选中内容</div>
+    <button id="saveNew" class="button button-primary">
+      新建文档保存
+    </button>
+    <button id="appendExisting" class="button button-secondary">
+      附加到现有文档
+    </button>
+  </div>
+
+  <div class="quick-actions">
+    <button id="clearHistory" class="quick-action">清理历史</button>
+    <button id="showStatus" class="quick-action">查看状态</button>
+    <button id="toggleTheme" class="quick-action">切换主题</button>
+  </div>
+
+  <div class="section">
+    <div class="section-title">操作说明</div>
+    <div style="font-size: 12px; color: #6b7280; line-height: 1.4;">
+      1. 在网页中选择要转换的内容<br>
+      2. <span id="contextMenuHint">右键点击选择保存选项</span><br>
+      3. 或使用快捷键快速保存
+    </div>
+  </div>
+
+  <div class="shortcut-hint">
+    快捷键: <span id="shortcutDisplay">Ctrl/Cmd + Shift + S</span>
+  </div>
+
+  <div id="statusBar" class="status-bar hidden">
+    <div id="statusText">就绪</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
